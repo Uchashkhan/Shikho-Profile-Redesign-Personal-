@@ -21,7 +21,7 @@ interface IdentityDashboardProps {
 
 export const IdentityDashboard = ({ user, onNavigateHistory, onNavigateEffort }: IdentityDashboardProps) => {
     // Sheet States
-    const [activeSheet, setActiveSheet] = useState<null | 'effort' | 'level' | 'highlight'>(null);
+    const [activeSheet, setActiveSheet] = useState<null | 'effort' | 'level' | 'highlight' | 'habit'>(null);
     const [selectedHighlight, setSelectedHighlight] = useState<null | Highlight>(null);
 
     const handleHighlightClick = (h: Highlight) => {
@@ -33,7 +33,10 @@ export const IdentityDashboard = ({ user, onNavigateHistory, onNavigateEffort }:
         <div className="bg-white min-h-screen pb-10 max-w-[420px] mx-auto border-x border-gray-100 shadow-2xl relative">
             <IdentityHeader user={user} />
 
-            <HabitRhythmCard user={user} />
+            <HabitRhythmCard
+                user={user}
+                onExplain={() => setActiveSheet('habit')}
+            />
 
             <EffortScoreCard
                 user={user}
@@ -59,6 +62,19 @@ export const IdentityDashboard = ({ user, onNavigateHistory, onNavigateEffort }:
             />
 
             {/* Manual Verification Sheets */}
+            <BottomSheet
+                isOpen={activeSheet === 'habit'}
+                onClose={() => setActiveSheet(null)}
+                title="Consistency Rhythm"
+            >
+                <p className="text-gray-600 leading-relaxed mb-4">
+                    Some days are lighter, some are stronger — both count.
+                </p>
+                <div className="text-indigo-600 font-medium p-4 bg-indigo-50 rounded-xl">
+                    Consistency is about rhythm, not perfection.
+                </div>
+            </BottomSheet>
+
             <BottomSheet
                 isOpen={activeSheet === 'effort'}
                 onClose={() => setActiveSheet(null)}

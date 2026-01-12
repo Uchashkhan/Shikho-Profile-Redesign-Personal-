@@ -18,12 +18,17 @@ export const EffortScoreCard = ({ user, onNavigate }: EffortScoreCardProps) => {
     // Calculate average
     const avgScore = data.reduce((a, b) => a + b, 0) / data.length;
     const avgPct = (avgScore / maxVal) * 100;
+    const isZeroState = avgScore === 0;
+    const idealHeightPct = 60; // Represents the target zone height
 
-    // "Ideal" zone (e.g. 70 to 100)
-    const idealStart = 70;
-    const idealHeightPct = ((100 - idealStart) / 100) * 100;
+    // Effort Zone Logic
+    const getEffortZone = (score: number) => {
+        if (score >= 76) return { label: 'High', copy: "High effort day — balance tomorrow." };
+        if (score >= 41) return { label: 'Optimal', copy: "You’re in an optimal effort range today." };
+        return { label: 'Light', copy: "You’re in a lighter effort range today." };
+    };
 
-    const isZeroState = todayScore === 0 && avgScore === 0;
+    const currentZone = getEffortZone(todayScore);
 
     return (
         <div className="mx-4 mt-6 bg-white border border-gray-100 rounded-[32px] p-6 shadow-sm">
@@ -37,6 +42,12 @@ export const EffortScoreCard = ({ user, onNavigate }: EffortScoreCardProps) => {
                             {todayScore.toFixed(0)}
                         </span>
                         <span className="text-lg font-medium text-gray-400">/ 100</span>
+                    </div>
+                    {/* Zone Label */}
+                    <div className="mt-1">
+                        <span className="inline-block px-2 py-0.5 bg-gray-100 text-gray-500 text-[10px] font-bold uppercase tracking-wider rounded-md">
+                            {currentZone.label}
+                        </span>
                     </div>
                 </div>
 
@@ -118,15 +129,8 @@ export const EffortScoreCard = ({ user, onNavigate }: EffortScoreCardProps) => {
             {/* Feedback / Insight */}
             <div>
                 <h4 className="text-sm font-bold text-gray-900 mb-1">
-                    {todayScore >= 80 ? "Your effort is Excellent!" :
-                        todayScore >= 50 ? "Your effort is solid but could be higher." :
-                            "Your effort is a bit low today."}
+                    {currentZone.copy}
                 </h4>
-                <p className="text-xs text-gray-500 leading-relaxed">
-                    {todayScore >= 80
-                        ? "You're consistently hitting the target zone. Keep maintaining this rhythm to unlock the Elite tier."
-                        : "Try adding just 15 more minutes of focused learning to reach the target zone."}
-                </p>
 
                 <button
                     onClick={onNavigate}

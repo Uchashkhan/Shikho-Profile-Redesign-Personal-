@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import type { UserProfile } from '../../types/userProfile';
-import { Flame } from 'lucide-react';
+import { Flame, Info } from 'lucide-react';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
 
 interface HabitRhythmCardProps {
     user: UserProfile;
+    onExplain: () => void;
 }
 
 // Helpers
@@ -18,7 +19,7 @@ const CURRENT_YEAR = TODAY.getFullYear();
 const CURRENT_MONTH = TODAY.getMonth(); // 0 = Jan
 const CURRENT_DATE = TODAY.getDate();
 
-export const HabitRhythmCard = ({ user }: HabitRhythmCardProps) => {
+export const HabitRhythmCard = ({ user, onExplain }: HabitRhythmCardProps) => {
     const [viewMode, setViewMode] = useState<'week' | 'month'>('week');
 
     // Parse active dates
@@ -61,13 +62,22 @@ export const HabitRhythmCard = ({ user }: HabitRhythmCardProps) => {
         <div className="mx-4 mt-6">
             {/* Header Row */}
             <div className="flex items-center justify-between mb-3">
-                <div>
-                    <h3 className="text-sm font-bold text-gray-900">
-                        {viewMode === 'week' ? 'Weekly Activity' : 'Monthly Consistency'}
-                    </h3>
-                    <p className="text-xs text-gray-500">
-                        {viewMode === 'week' ? 'This week so far' : monthParam.name}
-                    </p>
+                <div className="flex items-center gap-2">
+                    <div>
+                        <h3 className="text-sm font-bold text-gray-900">
+                            {viewMode === 'week' ? 'Weekly Activity' : 'Monthly Consistency'}
+                        </h3>
+                        <p className="text-xs text-gray-500">
+                            {viewMode === 'week' ? 'This week so far' : monthParam.name}
+                        </p>
+                    </div>
+                    <button
+                        onClick={onExplain}
+                        className="text-gray-400 hover:text-indigo-600 transition-colors p-1"
+                        aria-label="Explain consistency rhythm"
+                    >
+                        <Info className="w-4 h-4" />
+                    </button>
                 </div>
 
                 {/* Toggle */}

@@ -13,6 +13,21 @@ export const PaidJourneyCard = ({ user }: PaidJourneyCardProps) => {
 
     const { yearProgressPct, milestones, rewardAt100 } = user.paidJourney;
 
+    // Trajectory Logic
+    const now = new Date();
+    const start = new Date(now.getFullYear(), 0, 0);
+    const diff = now.getTime() - start.getTime();
+    const oneDay = 1000 * 60 * 60 * 24;
+    const dayOfYear = Math.floor(diff / oneDay);
+    const expectedProgress = (dayOfYear / 365) * 100;
+
+    let statusLabel = 'On Track';
+    if (yearProgressPct > expectedProgress + 2) {
+        statusLabel = 'Ahead of pace';
+    } else if (yearProgressPct < expectedProgress - 5) {
+        statusLabel = 'Paused recently';
+    }
+
     return (
         <div className="mx-4 mt-8 bg-white border border-gray-100 rounded-3xl p-6 shadow-sm">
             <div className="flex items-center gap-2 mb-6">
@@ -26,7 +41,7 @@ export const PaidJourneyCard = ({ user }: PaidJourneyCardProps) => {
                     <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mt-1">Year Completion</p>
                 </div>
                 <span className="bg-indigo-50 text-indigo-600 text-xs font-bold px-3 py-1.5 rounded-lg">
-                    On Track
+                    {statusLabel}
                 </span>
             </div>
 
